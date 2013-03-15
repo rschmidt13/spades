@@ -1,10 +1,7 @@
--- a script that calculates page rank based on wat files
+-- a script that implements the page rank algorthm
 
--- the implementation of the core algorithm has been taken from
--- http://techblug.wordpress.com/2011/07/29/pagerank-implementation-in-pig/
-
-%default INPUT 'wat/WEB-20130124130848014-00000-31940~s3scape01~8083.wat.gz';
---%default INPUT 'wat';
+--%default INPUT 'wat/WEB-20130124130848014-00000-31940~s3scape01~8083.wat.gz';
+%default INPUT 'wat';
 %default OUTPUT 'pagerank';
 %default OUTPUT2 'pagerank_summary';
 
@@ -110,14 +107,22 @@ new_pagerank = foreach intermediate {
 ----------------------------
 -- start: another iteration
 ----------------------------
+outbound_pagerank = foreach new_pagerank generate url, pagerank/COUNT($2) as pagerank, flatten($2) as to_url;
 new_pagerank = foreach (cogroup outbound_pagerank by to_url, new_pagerank by url inner) {
- prevpr = SUM(new_pagerank.pagerank);
- inlinks = COUNT(new_pagerank.pagerank);
- generate group as url, ((inlinks > 0) ? (1-d.val)/N.val + d.val * SUM(new_pagerank.pagerank) : prevpr ) as pagerank; 
-}; 
+ inlinks = COUNT(outbound_pagerank.pagerank);
+ generate group as url, ((inlinks > 0) ? (1-0.75)/N.val + 0.75 * SUM(outbound_pagerank.pagerank) : (1-0.75)/N.val ) as pagerank, flatten(new_pagerank.links) as links; 
+};
+
 ----------------------------
 -- end: another iteration
 ----------------------------
+
+-- no flattening before writing results to file
+outbound_pagerank = foreach new_pagerank generate url, pagerank/COUNT($2) as pagerank, flatten($2) as to_url;
+new_pagerank = foreach (cogroup outbound_pagerank by to_url, new_pagerank by url inner) {
+ inlinks = COUNT(outbound_pagerank.pagerank);
+ generate group as url, ((inlinks > 0) ? (1-0.75)/N.val + 0.75 * SUM(outbound_pagerank.pagerank) : (1-0.75)/N.val ) as pagerank; 
+};
 
 
 -- order pagerank
