@@ -1,4 +1,7 @@
--- a script that implements the page rank algorthm
+-- a script that implements calculating page rank based on wat files
+
+-- the implementation of the core algorithm has been taken from
+-- http://techblug.wordpress.com/2011/07/29/pagerank-implementation-in-pig/
 
 %default INPUT 'wat/WEB-20130124130848014-00000-31940~s3scape01~8083.wat.gz';
 --%default INPUT 'wat';
