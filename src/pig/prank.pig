@@ -1,4 +1,4 @@
--- a script that implements calculating page rank based on wat files
+-- a script that calculatES page rank based on wat files
 
 -- the implementation of the core algorithm has been taken from
 -- http://techblug.wordpress.com/2011/07/29/pagerank-implementation-in-pig/
