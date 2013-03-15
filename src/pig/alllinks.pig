@@ -1,4 +1,6 @@
---default INPUT 'wat/WEB-20130124130848014-00000-31940~s3scape01~8083.wat.gz';
+-- a script to check for crawl completeness 
+
+-- default INPUT 'wat/WEB-20130124130848014-00000-31940~s3scape01~8083.wat.gz';
 %default INPUT 'wat';
 %default OUTPUT 'alllinks';
 %default OUTPUT_Sources 'alllinks_sources';
