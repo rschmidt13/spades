@@ -16,6 +16,8 @@ DEFINE resolve org.archive.hadoop.func.URLResolverFunc();
 -- load data from INPUT:
 Orig = LOAD '$INPUT' USING org.archive.hadoop.ArchiveJSONViewLoader('Envelope.WARC-Header-Metadata.WARC-Target-URI','Envelope.Payload-Metadata.HTTP-Response-Metadata.HTML-Metadata.Head.Base','Envelope.Payload-Metadata.HTTP-Response-Metadata.HTML-Metadata.@Links.{url,path,text,alt}') AS (src:chararray,html_base:chararray,relative:chararray,path:chararray,text:chararray,alt:chararray);
 
+LinksOnly = FILTER Orig BY relative != '';
+
 -- converts relative URL to absolute URL
 ResolvedLinks = FOREACH LinksOnly GENERATE src, resolve(src,html_base,relative) AS dst, path, CONCAT(text,alt) AS linktext;
 -- SortedLinks = ORDER ResolvedLinks BY src, dst, path, linktext;
